@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game of Life</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+</head>
+
+<body class="body">
+    <nav>
+        <div class="nav-wrapper">
+            <svg data-activates="slide-out" class="button-collapse" id="toggle-drawer" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            </svg>
+            <a href="/group-worud97/games/#" class="brand-logo">Play Games</a>
+
+            <ul id="slide-out" class="side-nav left-align">
+                <li>
+                    <a href="/group-worud97/games/#/ludo">Ludo</a>
+                </li>
+                <li>
+                    <div class="divider"></div>
+                </li>
+                <li>
+                    <a href="/group-worud97/games/#/guessing">Guessing Game</a>
+                </li>
+                <li>
+                    <div class="divider"></div>
+                </li>
+                <li>
+                    <a href="/group-worud97/games/tetris">Tetris</a>
+                </li>
+                <li>
+                    <div class="divider"></div>
+                </li>
+                <li>
+                    <a href="/group-worud97/games/gameoflife">Game of Life</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col s12">
+            <br/>
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-title">
+                        <h4>THE GAME OF LIFE</h4>
+                        <p>Created by Ben Celsi . . . Inspired by John Conway</p>
+                    </div>
+                    <div id="content">
+                        <div id="container">
+                            <div id="cells">
+                                <canvas width="750" height="750"></canvas>
+                            </div>
+                            <div id="menu">
+                                <div id="buttons">
+                                    <div>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="start">
+                                            <strong>START</strong>
+                                        </button>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="stop">
+                                            <strong>STOP</strong>
+                                        </button>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="step">
+                                            <strong>STEP</strong>
+                                        </button>
+
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="speed">
+                                            <strong>Speed: </strong>4</button>
+                                    </div>
+                                    <div>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="canvas">
+                                            <strong>Set Canvas: </strong>RANDOM</button>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="resolution">
+                                            <strong>Resolution: </strong>4</button>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="boundless">
+                                            <strong>Boundless: </strong>ON</button>
+                                    </div>
+                                    <div>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="brushSize">
+                                            <strong>Brush Size: </strong>3</button>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="brushMode">
+                                            <strong>Brush Mode: </strong>FILL</button>
+                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="color">
+                                            <strong>Color: </strong>BLUE</button>
+                                    </div>
+                                </div>
+                                <div id="neighbors">
+                                    Which cells are considered neighbors?
+                                    <div id="nbrBtns"></div>
+                                </div>
+                                <div id="rule">
+                                    Outcome of a living cell with given # of neighbors:
+                                    <div id="onrule"></div>
+                                    Outcome of a dead cell with given # of neighbors:
+                                    <div id="offrule"></div>
+                                </div>
+                                <br>
+                                <strong>EPILEPSY WARNING: MAY INVOLVE FLASHING LIGHTS</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>
