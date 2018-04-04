@@ -7,45 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Game of Life</title>
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 </head>
 
 <body class="body">
-    <nav>
-        <div class="nav-wrapper">
-            <svg data-activates="slide-out" class="button-collapse" id="toggle-drawer" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-            </svg>
-            <a href="/group-worud97/games/#" class="brand-logo">Play Games</a>
-
-            <ul id="slide-out" class="side-nav left-align">
-                <li>
-                    <a href="/group-worud97/games/#/ludo">Ludo</a>
-                </li>
-                <li>
-                    <div class="divider"></div>
-                </li>
-                <li>
-                    <a href="/group-worud97/games/#/guessing">Guessing Game</a>
-                </li>
-                <li>
-                    <div class="divider"></div>
-                </li>
-                <li>
-                    <a href="/group-worud97/games/tetris">Tetris</a>
-                </li>
-                <li>
-                    <div class="divider"></div>
-                </li>
-                <li>
-                    <a href="/group-worud97/games/gameoflife">Game of Life</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="row">
         <div class="col s12">
             <br/>
@@ -63,33 +29,40 @@
                             <div id="menu">
                                 <div id="buttons">
                                     <div>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="start">
+                                        <button id="start">
                                             <strong>START</strong>
                                         </button>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="stop">
+                                        <button id="stop">
                                             <strong>STOP</strong>
                                         </button>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="step">
+                                        <button id="step">
                                             <strong>STEP</strong>
                                         </button>
 
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="speed">
+                                        <button id="speed">
                                             <strong>Speed: </strong>4</button>
                                     </div>
                                     <div>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="canvas">
-                                            <strong>Set Canvas: </strong>RANDOM</button>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="resolution">
+									
+											Set Canvas:
+										<strong><select id = "setCanvas"></strong>
+										  <option value="0">RANDOM</option>
+										  <option value="1">CHECKERS</option>
+										  <option value="2">STRIPES</option>
+										  <option value="3">CLEAR</option>
+										  <option value="4">FILL</option>
+										</select>
+                                        <button id="resolution">
                                             <strong>Resolution: </strong>4</button>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="boundless">
+                                        <button id="boundless">
                                             <strong>Boundless: </strong>ON</button>
                                     </div>
                                     <div>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="brushSize">
+                                        <button id="brushSize">
                                             <strong>Brush Size: </strong>3</button>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="brushMode">
+                                        <button id="brushMode">
                                             <strong>Brush Mode: </strong>FILL</button>
-                                        <button class="waves-effect waves-light grey lighten-5 blue-text btn" id="color">
+                                        <button id="color">
                                             <strong>Color: </strong>BLUE</button>
                                     </div>
                                 </div>
@@ -103,8 +76,6 @@
                                     Outcome of a dead cell with given # of neighbors:
                                     <div id="offrule"></div>
                                 </div>
-                                <br>
-                                <strong>EPILEPSY WARNING: MAY INVOLVE FLASHING LIGHTS</strong>
                             </div>
                         </div>
                     </div>
@@ -114,9 +85,6 @@
     </div>
 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <script src="js/index.js"></script>
 </body>
 

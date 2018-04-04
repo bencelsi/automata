@@ -19,7 +19,7 @@ let boundless = true;
 let resolutions = [[60, 10], [75, 8], [100, 6], [150, 4], [300, 2]] //600px
 let speeds = [400, 225, 150, 75, 0]
 let brushSizes = [0, 1, 3, 5, 10]
-let canvases = ["CLEAR", "FILL", "RANDOM", "CHECKERS", "STRIPES"]
+let canvases = ["RANDOM", "CHECKERS", "STRIPES", "CLEAR", "FILL", ]
 let brushModes = ["FILL", "CLEAR", "INVERT", "RANDOM"]
 let sizes = ["1", "2", "3", "4", "5"]
 let colors = ["BLUE", "GREEN", "YELLOW", "ORANGE", "RED", "PURPLE"]
@@ -29,14 +29,6 @@ let timer = null;
 let delay = speeds[speed];
 let onColor = "blue";
 let offColor = "white"
-
-document.querySelector("#toggle-drawer").addEventListener("click", function () {
-    document.body.classList.toggle("drawer-open");
-});
-
-document.querySelector("#content").addEventListener("click", function () {
-    document.body.classList.remove("drawer-open");
-});
 
 CAN.setAttribute("width", DIM * PIX + "px");
 CAN.setAttribute("height", DIM * PIX + "px");
@@ -60,8 +52,8 @@ CAN.addEventListener("mousedown", function (e) {
     }
     render();
 })
-// qs("#menu").style.width = DIM*PIX + "px"
-// qs("#menu").style.height = DIM*PIX + "px"
+qs("#menu").style.width = DIM*PIX + "px"
+qs("#menu").style.height = DIM*PIX + "px"
 
 function qs(q) {
     return document.querySelector(q);
@@ -76,13 +68,17 @@ function makeGrid() {
         let row = [];
         for (let x = 0; x < DIM; x++) {
             let val = canvas;
-            if (canvas === 2) {
+            if (canvas === 0) {
                 val = Math.floor(Math.random() * 2)
-            } else if (canvas === 3) {
+            } else if (canvas === 1) {
                 ((x - y) % 2 === 0) ? val = 0 : val = 1
-            } else if (canvas === 4) {
+            } else if (canvas === 2) {
                 (x % 2 === 0) ? val = 0 : val = 1
-            }
+            } else if (canvas === 3) {
+				val = 0;
+			} else {
+				val = 1;
+			}
             row[x] = [x, y, val]
         };
         grid[y] = row
@@ -286,6 +282,15 @@ renderNbrBtns();
 let nbrNext = 0;
 
 
+
+qs("#setCanvas").addEventListener("change", function () {
+	canvas = parseInt(qs("#setCanvas").value);
+   
+    makeGrid();
+	qs("#setCanvas").value = -1;
+	qs("#setCanvas").text = "Set Canvas...";
+});
+
 qs("#boundless").addEventListener("click", function () {
     boundless = !boundless
     this.innerHTML = "<strong>Boundless: </strong> " + ((boundless) ? "ON" : "OFF")
@@ -299,13 +304,6 @@ qs("#brushMode").addEventListener("click", function () {
 qs("#brushSize").addEventListener("click", function () {
     brushSize = mod(brushSize + 1, brushSizes.length)
     this.innerHTML = "<strong>Brush Size: </strong>" + sizes[brushSize]
-});
-
-qs("#canvas").addEventListener("click", function () {
-    canvas = mod(canvas + 1, canvases.length)
-    stop();
-    makeGrid();
-    this.innerHTML = "<strong>Set Canvas: </strong>" + canvases[canvas]
 });
 
 qs("#color").addEventListener("click", function () {
