@@ -1,3 +1,4 @@
+//VARS/CONSTANTS
 let DIM = 150;
 let PIX = 4;
 let NBR_DIM = 5;
@@ -8,7 +9,7 @@ let brushMode = 0;
 let brushSize = 2;
 let speed = 3
 let resolution = 3;
-let canvas = 2;
+let canvas = 0;
 let color = 0;
 
 let offRule = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -29,6 +30,17 @@ let timer = null;
 let delay = speeds[speed];
 let onColor = "blue";
 let offColor = "white"
+
+//HELPER FUNCTIONS
+function qs(q) {
+    return document.querySelector(q);
+}
+
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
+
+
 
 CAN.setAttribute("width", DIM * PIX + "px");
 CAN.setAttribute("height", DIM * PIX + "px");
@@ -55,13 +67,6 @@ CAN.addEventListener("mousedown", function (e) {
 qs("#menu").style.width = DIM*PIX + "px"
 qs("#menu").style.height = DIM*PIX + "px"
 
-function qs(q) {
-    return document.querySelector(q);
-}
-
-function mod(n, m) {
-    return ((n % m) + m) % m;
-}
 
 function makeGrid() {
     for (let y = 0; y < DIM; y++) {
@@ -261,7 +266,6 @@ function makeNbrBtns() {
     }
 }
 
-makeNbrBtns();
 let q = [1, 2, 3, 4, 5, 6, 7]
 function renderNbrBtns() {
     let nbrBtns = document.getElementsByClassName("nbrBtn");
@@ -278,15 +282,16 @@ function removeNbrBtn(x, y) {
     let tmpNbrs = nbrs.slice();
 }
 
+makeNbrBtns();
 renderNbrBtns();
 let nbrNext = 0;
 
 
+//OTHER BUTTONS
 
 qs("#setCanvas").addEventListener("change", function () {
 	canvas = parseInt(qs("#setCanvas").value);
-   
-    makeGrid();
+       makeGrid();
 	qs("#setCanvas").value = -1;
 	qs("#setCanvas").text = "Set Canvas...";
 });
@@ -355,10 +360,3 @@ function stop() {
     timer = null;
 }
 
-// materialize CSS side nav
-$('.button-collapse').sideNav({
-    menuWidth: 300,
-    edge: 'left',
-    closeOnClick: true,
-    draggable: true,
-});

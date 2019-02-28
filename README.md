@@ -1,1 +1,1 @@
-# automata
+A cellular automata (similar to John Conway's Game of Life), which allows users to define their own propagation rules

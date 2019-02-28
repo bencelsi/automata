@@ -38,6 +38,10 @@ button {
 	margin: 0;
 }
 
+.nbrRow {
+	height: 20px;
+}
+
 #neighbors {
 	margin-bottom: 20px;
 }
@@ -63,4 +67,3 @@ nav .brand-logo {
 .side-nav li>a {
 	font-size: 16px;
 }
-
