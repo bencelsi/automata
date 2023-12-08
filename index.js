@@ -14,6 +14,7 @@ let color = 0;
 
 let offRule = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 let onRule = [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 let nbrs = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]];
 
 let boundless = true;
@@ -28,62 +29,51 @@ let colors = ["BLUE", "GREEN", "YELLOW", "ORANGE", "RED", "PURPLE"]
 let grid = [];
 let timer = null;
 let delay = speeds[speed];
-let onColor = "blue";
+
 let offColor = "white"
+let onColor = "blue";
+let twoColor = "purple";
 
-//HELPER FUNCTIONS
-function qs(q) {
-    return document.querySelector(q);
-}
+/*
+// TODOs:
+Add multicolor
+better UI
+Draggable brush
+Save state button
 
-function mod(n, m) {
-    return ((n % m) + m) % m;
-}
-
+fun presets
+parallelize
+*/
 
 
 CAN.setAttribute("width", DIM * PIX + "px");
 CAN.setAttribute("height", DIM * PIX + "px");
-CAN.addEventListener("mousedown", function (e) {
-    let x = Math.floor((e.pageX - CAN.offsetLeft) / PIX)
-    let y = Math.floor((e.pageY - CAN.offsetTop) / PIX)
-    console.log(x + " " + y)
-    setCell(x, y, 1)
-    for (let i = x - brushSizes[brushSize]; i <= x + brushSizes[brushSize]; i++) {
-        for (let j = y - brushSizes[brushSize]; j <= y + brushSizes[brushSize]; j++) {
-            if (brushMode === 0) { //fill
-                setCell(i, j, 1)
-            } else if (brushMode === 1) { //clear
-                setCell(i, j, 0)
-            } else if (brushMode === 2) { //invert
-                setCell(i, j, (getCell(i, j) === 0) ? 1 : 0)
-            } else { //random
-                setCell(i, j, Math.floor(2 * Math.random()))
-            }
-        }
-    }
-    render();
-})
+
 qs("#menu").style.width = DIM*PIX + "px"
 qs("#menu").style.height = DIM*PIX + "px"
-
 
 function makeGrid() {
     for (let y = 0; y < DIM; y++) {
         let row = [];
         for (let x = 0; x < DIM; x++) {
-            let val = canvas;
-            if (canvas === 0) {
-                val = Math.floor(Math.random() * 2)
-            } else if (canvas === 1) {
-                ((x - y) % 2 === 0) ? val = 0 : val = 1
-            } else if (canvas === 2) {
-                (x % 2 === 0) ? val = 0 : val = 1
-            } else if (canvas === 3) {
-				val = 0;
-			} else {
-				val = 1;
-			}
+            let val = 0;
+            switch(canvas) {
+                case 0: //random
+                    val = Math.floor(Math.random() * 2)
+                    break
+                case 1: // checkers
+                    ((x - y) % 2 === 0) ? val = 0 : val = 1
+                    break
+                case 2: //
+                    (x % 2 === 0) ? val = 0 : val = 1
+                    break
+                case 3:
+                    val = 0
+                    break
+                case 4:
+                    val = 1;
+                    break
+            }
             row[x] = [x, y, val]
         };
         grid[y] = row
@@ -94,10 +84,10 @@ makeGrid();
 
 
 function getCell(x, y) {
-    if (boundless) {
-        return (grid[mod(y, DIM)][mod(x, DIM)][2]);
-    } else if (x >= 0 && x < DIM && y >= 0 && y < DIM) {
+    if (x >= 0 && x < DIM && y >= 0 && y < DIM) {
         return (grid[y][x][2]);
+    } else if (boundless) {
+        return (grid[mod(y, DIM)][mod(x, DIM)][2]);
     } else {
         return 0;
     }
@@ -107,15 +97,24 @@ function setCell(x, y, state) {
     grid[y][x][2] = state;
 }
 
-function render() { //draw the contents of the grid onto a canvas   
+//draw the contents of the grid onto a canvas   
+function render() { 
     qs("#cells").style.backgroundColor = offColor;
     CTX.clearRect(0, 0, DIM * PIX, DIM * PIX); //this should clear the canvas ahead of each redraw
-    for (var y = 0; y < DIM; y++) { //iterate through rows
-        for (var x = 0; x < DIM; x++) { //iterate through columns
-            if (getCell(x, y) >= 1) {
-                CTX.fillStyle = onColor;
-                CTX.fillRect(x * PIX, y * PIX, PIX, PIX);
+    for (var y = 0; y < DIM; y++) {
+        for (var x = 0; x < DIM; x++) {
+            let cellState = getCell(x, y)
+            switch(cellState) {
+                case 0:
+                    continue;
+                case 1:
+                    CTX.fillStyle = onColor;
+                    break;
+                case 2:
+                    CTX.fillStyle = twoColor;
+                    break;
             }
+            CTX.fillRect(x * PIX, y * PIX, PIX, PIX);
         }
     }
 }
@@ -147,51 +146,22 @@ function rule(cell) {
     }
 }
 
-//let offRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]//boxy
-//let onRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-//let offRule = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//dotty
-//let onRule = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-//let offRule = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//retro
-//let onRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
-//let offRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//woozily
-//let onRule = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-//let offRule = [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//maze
-//let onRule = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-//let offRule = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//retro
-//let onRule = [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-//let offRule = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//cowy
-//let onRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-//let offRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//thick
-//let onRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-//let offRule = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//empty
-//let onRule = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-//classic
-//let nbrs = [[1,1],[1,-1],[-1,-1],[-1,1]]; //diagonals only
-//let nbrs = [[1,1],[1,-1],[-1,-1],[-1,1],[2,2],[2,-2],[-2,-2],[-2,2]]; //diagonal star
-//let nbrs = [[0,1],[0,-1],[0,2],[0,-2],[0,3],[0,-3]]; //line out
-//let nbrs = [[0,1],[0,-1],[-1,0],[1,0],[2,0],[0,2],[-2,0],[0,-2]];// straight star
-//let nbrs = [[2,1],[2,0],[1,-3],[0,-1],[1,-1],[1,0],[4,4],[0,-2]]; //random
-//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,1],[0,2],[0,1]]; //arrow
-//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,1],[0,2],[0,2]]; //arrow 2
-//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,1],[0,2],[0,3]]; //arrow 3
-//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,10],[0,20],[0,40]]; //arrow 4
-
-//combos- arrow + dotty, arrow+thick
-
 function makeRuleBtns(ruleArr) {
     for (let i = 0; i < ruleArr.length; i++) {
         let btn = document.createElement("button")
         btn.classList.add("rulebutton");
         btn.textContent = i;
         btn.addEventListener("click", function () {
-            let on = (ruleArr[i] === 1);
             let newRule = 0;
-            if (on) {
-                this.style.backgroundColor = offColor;
-                ruleArr[i] = 0
-            } else {
+            if (ruleArr[i] == 0) {
                 this.style.backgroundColor = onColor;
                 ruleArr[i] = 1
+            } else if(ruleArr[i] == 1) {
+                this.style.backgroundColor = twoColor;
+                ruleArr[i] = 2
+            } else {
+                this.style.backgroundColor = offColor;
+                ruleArr[i] = 0
             }
         });
         if (ruleArr == onRule) {
@@ -218,6 +188,8 @@ function renderRuleBtns(rule) {
             btn.style.display = "inline";
             if (rule[i] === 1) {
                 btn.style.backgroundColor = onColor
+            } else if (rule[i] == 2) {
+                btn.style.backgroundColor = twoColor
             } else {
                 btn.style.backgroundColor = offColor
             }
@@ -286,6 +258,27 @@ makeNbrBtns();
 renderNbrBtns();
 let nbrNext = 0;
 
+// BRUSH
+CAN.addEventListener("mousedown", function (e) {
+    let x = Math.floor((e.pageX - CAN.offsetLeft) / PIX)
+    let y = Math.floor((e.pageY - CAN.offsetTop) / PIX)
+    console.log(x + " " + y)
+    setCell(x, y, 1)
+    for (let i = x - brushSizes[brushSize]; i <= x + brushSizes[brushSize]; i++) {
+        for (let j = y - brushSizes[brushSize]; j <= y + brushSizes[brushSize]; j++) {
+            if (brushMode === 0) { //fill
+                setCell(i, j, 1)
+            } else if (brushMode === 1) { //clear
+                setCell(i, j, 0)
+            } else if (brushMode === 2) { //invert
+                setCell(i, j, (getCell(i, j) === 0) ? 1 : 0)
+            } else { //random
+                setCell(i, j, Math.floor(2 * Math.random()))
+            }
+        }
+    }
+    render();
+})
 
 //OTHER BUTTONS
 
@@ -360,3 +353,42 @@ function stop() {
     timer = null;
 }
 
+//HELPER FUNCTIONS
+function qs(q) {
+    return document.querySelector(q);
+}
+
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
+
+//let offRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]//boxy
+//let onRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+//let offRule = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//dotty
+//let onRule = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+//let offRule = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//retro
+//let onRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+//let offRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//woozily
+//let onRule = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+//let offRule = [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//maze
+//let onRule = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+//let offRule = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//retro
+//let onRule = [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+//let offRule = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//cowy
+//let onRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+//let offRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]//thick
+//let onRule = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+//let offRule = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]//empty
+//let onRule = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+//classic
+//let nbrs = [[1,1],[1,-1],[-1,-1],[-1,1]]; //diagonals only
+//let nbrs = [[1,1],[1,-1],[-1,-1],[-1,1],[2,2],[2,-2],[-2,-2],[-2,2]]; //diagonal star
+//let nbrs = [[0,1],[0,-1],[0,2],[0,-2],[0,3],[0,-3]]; //line out
+//let nbrs = [[0,1],[0,-1],[-1,0],[1,0],[2,0],[0,2],[-2,0],[0,-2]];// straight star
+//let nbrs = [[2,1],[2,0],[1,-3],[0,-1],[1,-1],[1,0],[4,4],[0,-2]]; //random
+//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,1],[0,2],[0,1]]; //arrow
+//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,1],[0,2],[0,2]]; //arrow 2
+//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,1],[0,2],[0,3]]; //arrow 3
+//let nbrs = [[1,1],[2,2],[-1,1],[-2,2],[0,10],[0,20],[0,40]]; //arrow 4
+
+//combos- arrow + dotty, arrow+thick

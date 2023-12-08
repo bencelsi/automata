@@ -1,3 +1,5 @@
+<!-- automatatron ? -->
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -38,11 +40,12 @@
 											<button id="step">
 											<strong>STEP</strong>
 											</button>
-
-											<button id="speed">
-												<strong>Speed: </strong>4</button>
 										</div>
+										
 										<div>
+											<button id="speed">
+												<strong>Speed: </strong>4
+											</button>
 											Set Canvas:
 											<strong><select id = "setCanvas"></strong>
 												<option value="0">RANDOM</option>
@@ -66,13 +69,14 @@
 										</div>
 									</div>
 									<div id="neighbors">
-										Which cells are considered neighbors?
+										Which surrounding cells are considered neighbors? (⬛ = true, ⬜ = false)
 										<div id="nbrBtns"></div>
 									</div>
 									<div id="rule">
-										Outcome of a living cell with given # of neighbors:
+										Outcome of a 🟦 cell with given # of neighbors:
 										<div id="onrule"></div>
-										Outcome of a dead cell with given # of neighbors:
+										<br>
+										Outcome of a ⬜ cell with given # of neighbors:
 										<div id="offrule"></div>
 									</div>
 								</div>
