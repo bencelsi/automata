@@ -1,9 +1,6 @@
 //VARS/CONSTANTS
-let DIM = 150;
-let PIX = 4;
-let NBR_DIM = 5;
-let CAN = qs("canvas")
-let CTX = CAN.getContext("2d");
+let DIM = 150; let PIX = 4; let NBR_DIM = 5; let CANVAS = qs("canvas")
+let CTX = CANVAS.getContext("2d");
 
 let brushMode = 0;
 let brushSize = 2;
@@ -11,11 +8,6 @@ let speed = 3
 let resolution = 3;
 let canvas = 0;
 let color = 0;
-
-let offRule = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-let onRule = [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-let nbrs = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]];
 
 let boundless = true;
 let resolutions = [[60, 10], [75, 8], [100, 6], [150, 4], [300, 2]] //600px
@@ -30,9 +22,13 @@ let grid = [];
 let timer = null;
 let delay = speeds[speed];
 
-let offColor = "white"
-let onColor = "blue";
-let twoColor = "purple";
+
+let stateColors = ["white", "blue", "purple"]
+
+let neighbors = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]];
+
+let rules = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 /*
 // TODOs:
@@ -46,11 +42,21 @@ parallelize
 */
 
 
-CAN.setAttribute("width", DIM * PIX + "px");
-CAN.setAttribute("height", DIM * PIX + "px");
+CANVAS.setAttribute("width", DIM * PIX + "px");
+CANVAS.setAttribute("height", DIM * PIX + "px");
 
 qs("#menu").style.width = DIM*PIX + "px"
 qs("#menu").style.height = DIM*PIX + "px"
+
+makeRuleButtons();
+renderRuleButtons();
+
+makeGrid();
+
+//HELPER FUNCTIONS
+function qs(q) {
+    return document.querySelector(q);
+}
 
 function makeGrid() {
     for (let y = 0; y < DIM; y++) {
@@ -80,8 +86,6 @@ function makeGrid() {
     }
     render();
 }
-makeGrid();
-
 
 function getCell(x, y) {
     if (x >= 0 && x < DIM && y >= 0 && y < DIM) {
@@ -99,21 +103,15 @@ function setCell(x, y, state) {
 
 //draw the contents of the grid onto a canvas   
 function render() { 
-    qs("#cells").style.backgroundColor = offColor;
+    qs("#cells").style.backgroundColor = "white";
     CTX.clearRect(0, 0, DIM * PIX, DIM * PIX); //this should clear the canvas ahead of each redraw
     for (var y = 0; y < DIM; y++) {
         for (var x = 0; x < DIM; x++) {
             let cellState = getCell(x, y)
-            switch(cellState) {
-                case 0:
-                    continue;
-                case 1:
-                    CTX.fillStyle = onColor;
-                    break;
-                case 2:
-                    CTX.fillStyle = twoColor;
-                    break;
+            if (cellState == 0) {
+                continue
             }
+            CTX.fillStyle = stateColors[cellState]
             CTX.fillRect(x * PIX, y * PIX, PIX, PIX);
         }
     }
@@ -121,88 +119,72 @@ function render() {
 
 render();
 
+function doRule(cell) {
+    let state = cell[2];
+    return (rules[state][getNeighbors(cell[0], cell[1])]);
+}
+
 function step() {
     grid = grid.map(row => row.map(cell =>
-        [cell[0], cell[1], rule(cell)]))
+        [cell[0], cell[1], doRule(cell)]))
     render();
 }
 
 function getNeighbors(x, y) {
     let n = 0
-    for (let i = 0; i < nbrs.length; i++) {
-        if (getCell(x + nbrs[i][0], y + nbrs[i][1]) >= 1) {
+    for (let i = 0; i < neighbors.length; i++) {
+        if (getCell(x + neighbors[i][0], y + neighbors[i][1]) >= 1) {
             n++;
         }
     }
     return n;
 }
 
-function rule(cell) {
-    let state = cell[2];
-    if (cell[2] === 1) {
-        return (onRule[getNeighbors(cell[0], cell[1])]);
-    } else {
-        return (offRule[getNeighbors(cell[0], cell[1])]);
-    }
-}
-
-function makeRuleBtns(ruleArr) {
-    for (let i = 0; i < ruleArr.length; i++) {
-        let btn = document.createElement("button")
-        btn.classList.add("rulebutton");
-        btn.textContent = i;
-        btn.addEventListener("click", function () {
-            let newRule = 0;
-            if (ruleArr[i] == 0) {
-                this.style.backgroundColor = onColor;
-                ruleArr[i] = 1
-            } else if(ruleArr[i] == 1) {
-                this.style.backgroundColor = twoColor;
-                ruleArr[i] = 2
-            } else {
-                this.style.backgroundColor = offColor;
-                ruleArr[i] = 0
-            }
-        });
-        if (ruleArr == onRule) {
-            btn.id = ("onrb" + i);
-            qs("#onrule").appendChild(btn)
-        } else {
-            btn.id = ("offrb" + i);
-            qs("#offrule").appendChild(btn)
+function makeRuleButtons() {
+    for (let i = 0; i < rules.length; i++) {
+        let rule = rules[i]
+        for (let j = 0; j < rule.length; j++) {
+            let button = document.createElement("button")
+            button.classList.add("rulebutton");
+            button.textContent = j;
+            button.addEventListener("click", function () {
+                rule[j]++
+                if (rule[j] == 2) {
+                    rule[j] = 0
+                }
+                console.log('i')
+                this.style.backgroundColor = stateColors[rule[j]];
+            });
+            button.id = ("ruleButton" + i + "-" + j);
+            qs("#rule" + i).appendChild(button)
         }
     }
 }
 
-function renderRuleBtns(rule) {
-    for (let i = 0; i < rule.length; i++) {
-        let btn = qs("#offrb" + i)
-        if (rule === onRule) {
-            btn = qs("#onrb" + i)
-        }
-        if (i > nbrs.length) {
-            btn.disabled = true;
-            btn.style.display = "none";
-        } else {
-            btn.disabled = false;
-            btn.style.display = "inline";
-            if (rule[i] === 1) {
-                btn.style.backgroundColor = onColor
-            } else if (rule[i] == 2) {
-                btn.style.backgroundColor = twoColor
+function renderRuleButtons() {
+    for (let i = 0; i < rules.length; i++) {
+        let rule = rules[i]
+        for (let j = 0; j < rule.length; j++) {
+            let button = qs("#ruleButton" + i + "-" + j)
+            if (j > neighbors.length) {
+                button.disabled = true;
+                button.style.display = "none";
             } else {
-                btn.style.backgroundColor = offColor
+                button.disabled = false;
+                button.style.display = "inline";
+                button.style.backgroundColor = stateColors[rule[j]]    
             }
         }
     }
 }
 
-makeRuleBtns(onRule);
-makeRuleBtns(offRule);
-renderRuleBtns(onRule);
-renderRuleBtns(offRule);
+function renderRules() {
+    for (let i = 0; i < rules.length; i++) {
+        renderRuleButtons(rule, );
+    }
+}
 
-function makeNbrBtns() {
+function makeNeighborButtons() {
     for (let y = -NBR_DIM; y <= NBR_DIM; y++) {
         let row = document.createElement("div")
         row.classList.add("nbrRow")
@@ -213,23 +195,22 @@ function makeNbrBtns() {
             if (x !== 0 || y !== 0) {
                 btn.addEventListener("click", function () {
                     let nbrIndex = -1
-                    for (let i = 0; i < nbrs.length; i++) {
-                        if (nbrs[i][0] === x && nbrs[i][1] === y) {
+                    for (let i = 0; i < neighbors.length; i++) {
+                        if (neighbors[i][0] === x && neighbors[i][1] === y) {
                             nbrIndex = i;
                             break;
                         }
                     }
                     if (nbrIndex === -1) {
-                        if (nbrs.length === 16) {
-                            nbrs.splice(0, 1);
+                        if (neighbors.length === 16) {
+                            neighbors.splice(0, 1);
                         }
-                        nbrs.push([x, y]);
+                        neighbors.push([x, y]);
                     } else {
-                        nbrs.splice(nbrIndex, 1);
+                        neighbors.splice(nbrIndex, 1);
                     }
-                    renderNbrBtns();
-                    renderRuleBtns(onRule);
-                    renderRuleBtns(offRule);
+                    renderNeighborButtons();
+                    renderRules();
                 })
             }
             row.appendChild(btn);
@@ -239,29 +220,25 @@ function makeNbrBtns() {
 }
 
 let q = [1, 2, 3, 4, 5, 6, 7]
-function renderNbrBtns() {
+function renderNeighborButtons() {
     let nbrBtns = document.getElementsByClassName("nbrBtn");
     for (let i = 0; i < nbrBtns.length; i++) {
         nbrBtns[i].style.backgroundColor = "white";
     }
-    for (let i = 0; i < nbrs.length; i++) {
-        qs("#nbrx" + nbrs[i][0] + "y" + nbrs[i][1]).style.backgroundColor = "black";
+    for (let i = 0; i < neighbors.length; i++) {
+        qs("#nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
     }
-    qs("#nbrx0y0").style.backgroundColor = onColor;
+    qs("#nbrx0y0").style.backgroundColor = stateColors[1];
 }
 
-function removeNbrBtn(x, y) {
-    let tmpNbrs = nbrs.slice();
-}
-
-makeNbrBtns();
-renderNbrBtns();
+makeNeighborButtons();
+renderNeighborButtons();
 let nbrNext = 0;
 
 // BRUSH
-CAN.addEventListener("mousedown", function (e) {
-    let x = Math.floor((e.pageX - CAN.offsetLeft) / PIX)
-    let y = Math.floor((e.pageY - CAN.offsetTop) / PIX)
+CANVAS.addEventListener("mousedown", function (e) {
+    let x = Math.floor((e.pageX - CANVAS.offsetLeft) / PIX)
+    let y = Math.floor((e.pageY - CANVAS.offsetTop) / PIX)
     console.log(x + " " + y)
     setCell(x, y, 1)
     for (let i = x - brushSizes[brushSize]; i <= x + brushSizes[brushSize]; i++) {
@@ -306,11 +283,10 @@ qs("#brushSize").addEventListener("click", function () {
 
 qs("#color").addEventListener("click", function () {
     color = mod(color + 1, colors.length)
-    onColor = colors[color].toLowerCase()
+    //onColor = colors[color].toLowerCase()
     render();
-    renderNbrBtns();
-    renderRuleBtns(onRule);
-    renderRuleBtns(offRule);
+    renderNeighborButtons();
+    renderRules()
     this.innerHTML = "<strong>Color: </strong>" + colors[color]
 });
 
@@ -351,11 +327,6 @@ qs("#stop").addEventListener("click", stop);
 function stop() {
     clearInterval(timer);
     timer = null;
-}
-
-//HELPER FUNCTIONS
-function qs(q) {
-    return document.querySelector(q);
 }
 
 function mod(n, m) {
