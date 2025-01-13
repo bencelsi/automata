@@ -1,6 +1,17 @@
+
+/*
+// TODOs:
+Add multicolor
+better UI
+Draggable brush
+Save state button
+fun presets
+parallelize
+*/
+
 //VARS/CONSTANTS
-let DIM = 150; let PIX = 4; let NBR_DIM = 5; let CANVAS = qs("canvas")
-let CTX = CANVAS.getContext("2d");
+const DIM = 150; const PIX = 4; const NBR_DIM = 5; const CANVAS = qs("canvas")
+const CTX = CANVAS.getContext("2d");
 
 let brushMode = 0;
 let brushSize = 2;
@@ -30,33 +41,20 @@ let neighbors = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [
 let rules = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-/*
-// TODOs:
-Add multicolor
-better UI
-Draggable brush
-Save state button
-
-fun presets
-parallelize
-*/
 
 
 CANVAS.setAttribute("width", DIM * PIX + "px");
 CANVAS.setAttribute("height", DIM * PIX + "px");
 
-qs("#menu").style.width = DIM*PIX + "px"
-qs("#menu").style.height = DIM*PIX + "px"
+qs("#menu").style.width = DIM * PIX + "px"
+qs("#menu").style.height = DIM * PIX + "px"
 
 makeRuleButtons();
 renderRuleButtons();
-
 makeGrid();
 
 //HELPER FUNCTIONS
-function qs(q) {
-    return document.querySelector(q);
-}
+function qs(q) { return document.querySelector(q) }
 
 function makeGrid() {
     for (let y = 0; y < DIM; y++) {
@@ -64,42 +62,26 @@ function makeGrid() {
         for (let x = 0; x < DIM; x++) {
             let val = 0;
             switch(canvas) {
-                case 0: //random
-                    val = Math.floor(Math.random() * 2)
-                    break
-                case 1: // checkers
-                    ((x - y) % 2 === 0) ? val = 0 : val = 1
-                    break
-                case 2: //
-                    (x % 2 === 0) ? val = 0 : val = 1
-                    break
-                case 3:
-                    val = 0
-                    break
-                case 4:
-                    val = 1;
-                    break
+                case 0: val = Math.floor(Math.random() * 2); break //random
+                case 1: ((x - y) % 2 === 0) ? val = 0 : val = 1; break // checkers
+                case 2: (x % 2 === 0) ? val = 0 : val = 1; break
+                case 3: val = 0; break
+                case 4: val = 1; break
             }
             row[x] = [x, y, val]
-        };
+        }
         grid[y] = row
     }
     render();
 }
 
 function getCell(x, y) {
-    if (x >= 0 && x < DIM && y >= 0 && y < DIM) {
-        return (grid[y][x][2]);
-    } else if (boundless) {
-        return (grid[mod(y, DIM)][mod(x, DIM)][2]);
-    } else {
-        return 0;
-    }
+    if (x >= 0 && x < DIM && y >= 0 && y < DIM) return (grid[y][x][2]);
+    else if (boundless) return (grid[mod(y, DIM)][mod(x, DIM)][2]); 
+    else return 0;
 }
 
-function setCell(x, y, state) {
-    grid[y][x][2] = state;
-}
+function setCell(x, y, state) { grid[y][x][2] = state; }
 
 //draw the contents of the grid onto a canvas   
 function render() { 
@@ -108,9 +90,7 @@ function render() {
     for (var y = 0; y < DIM; y++) {
         for (var x = 0; x < DIM; x++) {
             let cellState = getCell(x, y)
-            if (cellState == 0) {
-                continue
-            }
+            if (cellState == 0) continue
             CTX.fillStyle = stateColors[cellState]
             CTX.fillRect(x * PIX, y * PIX, PIX, PIX);
         }
@@ -133,9 +113,7 @@ function step() {
 function getNeighbors(x, y) {
     let n = 0
     for (let i = 0; i < neighbors.length; i++) {
-        if (getCell(x + neighbors[i][0], y + neighbors[i][1]) >= 1) {
-            n++;
-        }
+        if (getCell(x + neighbors[i][0], y + neighbors[i][1]) >= 1) n++;
     }
     return n;
 }
@@ -149,10 +127,7 @@ function makeRuleButtons() {
             button.textContent = j;
             button.addEventListener("click", function () {
                 rule[j]++
-                if (rule[j] == 2) {
-                    rule[j] = 0
-                }
-                console.log('i')
+                if (rule[j] == 2) rule[j] = 0
                 this.style.backgroundColor = stateColors[rule[j]];
             });
             button.id = ("ruleButton" + i + "-" + j);
@@ -178,11 +153,7 @@ function renderRuleButtons() {
     }
 }
 
-function renderRules() {
-    for (let i = 0; i < rules.length; i++) {
-        renderRuleButtons(rule, );
-    }
-}
+function renderRules() { for (let i = 0; i < rules.length; i++) renderRuleButtons(rule, ) }
 
 function makeNeighborButtons() {
     for (let y = -NBR_DIM; y <= NBR_DIM; y++) {
@@ -197,20 +168,14 @@ function makeNeighborButtons() {
                     let nbrIndex = -1
                     for (let i = 0; i < neighbors.length; i++) {
                         if (neighbors[i][0] === x && neighbors[i][1] === y) {
-                            nbrIndex = i;
-                            break;
+                            nbrIndex = i; break;
                         }
                     }
                     if (nbrIndex === -1) {
-                        if (neighbors.length === 16) {
-                            neighbors.splice(0, 1);
-                        }
+                        if (neighbors.length === 16) neighbors.splice(0, 1);
                         neighbors.push([x, y]);
-                    } else {
-                        neighbors.splice(nbrIndex, 1);
-                    }
-                    renderNeighborButtons();
-                    renderRules();
+                    } else {  neighbors.splice(nbrIndex, 1) }
+                    renderNeighborButtons(); renderRules();
                 })
             }
             row.appendChild(btn);
@@ -222,12 +187,8 @@ function makeNeighborButtons() {
 let q = [1, 2, 3, 4, 5, 6, 7]
 function renderNeighborButtons() {
     let nbrBtns = document.getElementsByClassName("nbrBtn");
-    for (let i = 0; i < nbrBtns.length; i++) {
-        nbrBtns[i].style.backgroundColor = "white";
-    }
-    for (let i = 0; i < neighbors.length; i++) {
-        qs("#nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
-    }
+    for (let i = 0; i < nbrBtns.length; i++) nbrBtns[i].style.backgroundColor = "white";
+    for (let i = 0; i < neighbors.length; i++) qs("#nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
     qs("#nbrx0y0").style.backgroundColor = stateColors[1];
 }
 
@@ -243,15 +204,10 @@ CANVAS.addEventListener("mousedown", function (e) {
     setCell(x, y, 1)
     for (let i = x - brushSizes[brushSize]; i <= x + brushSizes[brushSize]; i++) {
         for (let j = y - brushSizes[brushSize]; j <= y + brushSizes[brushSize]; j++) {
-            if (brushMode === 0) { //fill
-                setCell(i, j, 1)
-            } else if (brushMode === 1) { //clear
-                setCell(i, j, 0)
-            } else if (brushMode === 2) { //invert
-                setCell(i, j, (getCell(i, j) === 0) ? 1 : 0)
-            } else { //random
-                setCell(i, j, Math.floor(2 * Math.random()))
-            }
+            if (brushMode === 0) setCell(i, j, 1) //fill
+            else if (brushMode === 1) setCell(i, j, 0) //clear
+            else if (brushMode === 2) setCell(i, j, (getCell(i, j) === 0) ? 1 : 0) //invert
+            else setCell(i, j, Math.floor(2 * Math.random())) //random
         }
     }
     render();
@@ -261,7 +217,7 @@ CANVAS.addEventListener("mousedown", function (e) {
 
 qs("#setCanvas").addEventListener("change", function () {
 	canvas = parseInt(qs("#setCanvas").value);
-       makeGrid();
+    makeGrid();
 	qs("#setCanvas").value = -1;
 	qs("#setCanvas").text = "Set Canvas...";
 });
@@ -301,25 +257,18 @@ qs("#resolution").addEventListener("click", function () {
 qs("#speed").addEventListener("click", function () {
     speed = mod(speed + 1, speeds.length);
     delay = speeds[speed];
-    if (timer != null) {
-        stop();
-        start();
-    }
+    if (timer != null) { stop(); start(); }
     this.innerHTML = "<strong>Speed: </strong>" + sizes[speed]
 });
 
 qs("#step").addEventListener("click", function () {
-    if (timer === null) {
-        step();
-    }
+    if (timer === null) step()
 });
 
 qs("#start").addEventListener("click", start);
 function start() {
     if (timer === null) {
-        timer = setInterval(function () {
-            step();
-        }, delay)
+        timer = setInterval(function () { step() }, delay)
     }
 }
 
@@ -329,9 +278,7 @@ function stop() {
     timer = null;
 }
 
-function mod(n, m) {
-    return ((n % m) + m) % m;
-}
+function mod(n, m) { return ((n % m) + m) % m }
 
 //let offRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]//boxy
 //let onRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]

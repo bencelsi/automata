@@ -1,90 +1,21 @@
-<!-- automatatron ? -->
-
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>Automata</title>
-		<!-- Compiled and minified CSS -->
-		<link rel="stylesheet" href="index.css">
-		<link rel='icon' type='image/x-icon' href='favicon.ico'>
-		<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
-	</head>
-	<body class="body">
-		<div class="row">
-			<div class="col s12">
-				<br/>
-				<div class="card">
-					<div class="card-content">
-						<div class="card-title">
-							<img src="automata.png" style="width: 500px;"></img>
-							<p>Based on <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's Game of Life</a></p>
-						</div>
-						<div id="content">
-							<div id="container">
-								<div id="cells">
-									<canvas width="750" height="750"></canvas>
-								</div>
-								<div id="menu">
-									<div id="buttons">
-										<div>
-											<button id="start">
-												<strong>START</strong>
-											</button>
-											<button id="stop">
-												<strong>STOP</strong>
-											</button>
-											<button id="step">
-											<strong>STEP</strong>
-											</button>
-										</div>
-										
-										<div>
-											<button id="speed">
-												<strong>Speed: </strong>4
-											</button>
-											Set Canvas:
-											<strong><select id = "setCanvas"></strong>
-												<option value="0">RANDOM</option>
-												<option value="1">CHECKERS</option>
-												<option value="2">STRIPES</option>
-												<option value="3">CLEAR</option>
-											 	<option value="4">FILL</option>
-											</select>
-											<button id="resolution">
-											<strong>Resolution: </strong>4</button>
-											<button id="boundless">
-											<strong>Boundless: </strong>ON</button>
-										</div>
-										<div>
-											<button id="brushSize">
-												<strong>Brush Size: </strong>3</button>
-											<button id="brushMode">
-												<strong>Brush Mode: </strong>FILL</button>
-											<button id="color">
-												<strong>Color: </strong>BLUE</button>
-										</div>
-									</div>
-									<div id="neighbors">
-										Which surrounding cells are considered neighbors? (⬛ = true, ⬜ = false)
-										<div id="nbrBtns"></div>
-									</div>
-									<div id="rule">
-										Outcome of a ⬜ cell with given # of neighbors:
-										<div id="rule0"></div>
-										<br>
-										Outcome of a 🟦 cell with given # of neighbors:
-										<div id="rule1"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<script src="index.js"></script>
-	</body>
-</html>
+<head>
+    <title>Automata</title>
+    <link rel="icon" href='favicon.ico'>
+	<meta http-equiv="refresh" content="0; url=Automata.html" />
+    <style type="text/css">
+        body {
+            background-color: white;
+            text-align: center;
+            animation: fadeIn 3s;
+        }
+        
+        @keyframes fadeIn { 0% { opacity: 0 } 100% { opacity: 1 }}
+        
+        a { color: gray; }
+    </style>
+</head>
+<body>
+	<br><br><br>
+	<p><a href="http://bencelsi.github.io/automata/Automata.html">(Automata: click here if not redirected)</a></p>
+</body>
