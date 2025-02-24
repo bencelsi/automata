@@ -7,7 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Automata</title>
 	<!-- Compiled and minified CSS -->
-	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="automata.css">
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 </head>
@@ -24,7 +24,7 @@
 					<div id="content">
 						<div id="container">
 							<div id="cells">
-								<canvas width="750" height="750"></canvas>
+								<canvas id="canvas" width="750" height="750"></canvas>
 							</div>
 							<div id="menu">
 								<div id="buttons">
@@ -67,7 +67,8 @@
 									</div>
 								</div>
 								<div id="neighbors">
-									Which surrounding cells are considered neighbors? (⬛ = true, ⬜ = false)
+									Which surrounding cells are considered neighbors? 
+									<br> (⬛ = true, ⬜ = false)
 									<div id="nbrBtns"></div>
 								</div>
 								<div id="rule">
@@ -84,5 +85,5 @@
 			</div>
 		</div>
 	</div>
-	<script src="index.js"></script>
+	<script src="automata.js"></script>
 </body>

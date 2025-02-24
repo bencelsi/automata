@@ -10,8 +10,21 @@ parallelize
 */
 
 //VARS/CONSTANTS
-const DIM = 150; const PIX = 4; const NBR_DIM = 5; const CANVAS = qs("canvas")
+const DIM = 150; const PIX = 4; const NBR_DIM = 5; const CANVAS = get("canvas")
 const CTX = CANVAS.getContext("2d");
+
+const NBR_BTNS =    document.getElementsByClassName("nbrBtn");
+const CELLS =       get("cells")
+const SET_CANVAS =  get("setCanvas")
+const BOUNDLESS =   get("boundless")
+const BRUSH_MODE =  get("brushMode")
+const BRUSH_SIZE =  get("brushSize")
+const COLOR =       get("color")
+const RESOLUTION =  get("resolution")
+const SPEED =       get("speed")
+const STEP =        get("step")
+const START =       get("start")
+const STOP =        get("stop")
 
 let brushMode = 0;
 let brushSize = 2;
@@ -33,26 +46,19 @@ let grid = [];
 let timer = null;
 let delay = speeds[speed];
 
-
 let stateColors = ["white", "blue", "purple"]
-
 let neighbors = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]];
-
-let rules = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
+let rules = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+let music = null; 
 CANVAS.setAttribute("width", DIM * PIX + "px");
 CANVAS.setAttribute("height", DIM * PIX + "px");
 
-qs("#menu").style.width = DIM * PIX + "px"
-qs("#menu").style.height = DIM * PIX + "px"
+get("menu").style.width = DIM * PIX + "px"
+get("menu").style.height = DIM * PIX + "px"
 
 makeRuleButtons();
 renderRuleButtons();
 makeGrid();
-
-//HELPER FUNCTIONS
-function qs(q) { return document.querySelector(q) }
 
 function makeGrid() {
     for (let y = 0; y < DIM; y++) {
@@ -83,7 +89,7 @@ function setCell(x, y, state) { grid[y][x][2] = state; }
 
 //draw the contents of the grid onto a canvas   
 function render() { 
-    qs("#cells").style.backgroundColor = "white";
+    CELLS.style.backgroundColor = "white";
     CTX.clearRect(0, 0, DIM * PIX, DIM * PIX); //this should clear the canvas ahead of each redraw
     for (var y = 0; y < DIM; y++) {
         for (var x = 0; x < DIM; x++) {
@@ -123,13 +129,13 @@ function makeRuleButtons() {
             let button = document.createElement("button")
             button.classList.add("rulebutton");
             button.textContent = j;
-            button.addEventListener("click", function () {
+            button.onclick = () => {
                 rule[j]++
                 if (rule[j] == 2) rule[j] = 0
                 this.style.backgroundColor = stateColors[rule[j]];
-            });
+            }
             button.id = ("ruleButton" + i + "-" + j);
-            qs("#rule" + i).appendChild(button)
+            get("rule" + i).appendChild(button)
         }
     }
 }
@@ -138,7 +144,7 @@ function renderRuleButtons() {
     for (let i = 0; i < rules.length; i++) {
         let rule = rules[i]
         for (let j = 0; j < rule.length; j++) {
-            let button = qs("#ruleButton" + i + "-" + j)
+            let button = get("ruleButton" + i + "-" + j)
             if (j > neighbors.length) {
                 button.disabled = true;
                 button.style.display = "none";
@@ -162,7 +168,7 @@ function makeNeighborButtons() {
             btn.id = "nbrx" + x + "y" + y;
             btn.classList.add("nbrBtn");
             if (x !== 0 || y !== 0) {
-                btn.addEventListener("click", function () {
+                btn.onclick = () => {
                     let nbrIndex = -1
                     for (let i = 0; i < neighbors.length; i++) {
                         if (neighbors[i][0] === x && neighbors[i][1] === y) { nbrIndex = i; break; }
@@ -172,20 +178,19 @@ function makeNeighborButtons() {
                         neighbors.push([x, y]);
                     } else {  neighbors.splice(nbrIndex, 1) }
                     renderNeighborButtons(); renderRules();
-                })
+                }
             }
             row.appendChild(btn);
         }
-        qs("#nbrBtns").appendChild(row)
+        NBR_BTNS.appendChild(row)
     }
 }
 
 let q = [1, 2, 3, 4, 5, 6, 7]
 function renderNeighborButtons() {
-    let nbrBtns = document.getElementsByClassName("nbrBtn");
-    for (let i = 0; i < nbrBtns.length; i++) nbrBtns[i].style.backgroundColor = "white";
-    for (let i = 0; i < neighbors.length; i++) qs("#nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
-    qs("#nbrx0y0").style.backgroundColor = stateColors[1];
+    for (let i = 0; i < NBR_BTNS.length; i++) NBR_BTNS[i].style.backgroundColor = "white";
+    for (let i = 0; i < neighbors.length; i++) get("nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
+    get("nbrx0y0").style.backgroundColor = stateColors[1];
 }
 
 makeNeighborButtons();
@@ -209,71 +214,79 @@ CANVAS.addEventListener("mousedown", function (e) {
     render();
 })
 
+
+
 //OTHER BUTTONS
+document.body.onclick = () => {
+    if (music != null) return
+    music = new Audio(); music.src = 'Jordan.mp3'; music.loop = true;
+    music.play()
+}
 
-qs("#setCanvas").addEventListener("change", function () {
-	canvas = parseInt(qs("#setCanvas").value);
+SET_CANVAS.onchange = () => {
+	canvas = parseInt(SET_CANVAS.value);
     makeGrid();
-	qs("#setCanvas").value = -1;
-	qs("#setCanvas").text = "Set Canvas...";
-});
+	SET_CANVAS.value = -1;
+	SET_CANVAS.text = "Set Canvas...";
+}
 
-qs("#boundless").addEventListener("click", function () {
+BOUNDLESS.onclick = () => {
     boundless = !boundless
-    this.innerHTML = "<strong>Boundless: </strong> " + ((boundless) ? "ON" : "OFF")
-});
+    BOUNDLESS.innerHTML = "<strong>Boundless: </strong> " + (boundless ? "ON" : "OFF")
+}
 
-qs("#brushMode").addEventListener("click", () => {
+BRUSH_MODE.onclick = () => {
     brushMode = mod(brushMode + 1, brushModes.length)
-    this.innerHTML = "<strong>Brush Mode: </strong> " + brushModes[brushMode]
-});
+    BRUSH_MODE.innerHTML = "<strong>Brush Mode: </strong> " + brushModes[brushMode]
+}
 
-qs("#brushSize").addEventListener("click", () => {
+BRUSH_SIZE.onclick = () => {
     brushSize = mod(brushSize + 1, brushSizes.length)
-    this.innerHTML = "<strong>Brush Size: </strong>" + sizes[brushSize]
-});
+    BRUSH_SIZE.innerHTML = "<strong>Brush Size: </strong>" + sizes[brushSize]
+}
 
-qs("#color").addEventListener("click", () => {
+COLOR.onclick =  () => {
     color = mod(color + 1, colors.length)
     //onColor = colors[color].toLowerCase()
     render();
     renderNeighborButtons();
     renderRules()
-    this.innerHTML = "<strong>Color: </strong>" + colors[color]
-});
+    COLOR.innerHTML = "<strong>Color: </strong>" + colors[color]
+}
 
-qs("#resolution").addEventListener("click", () => {
+RESOLUTION.onclick = () => {
     resolution = mod(resolution + 1, resolutions.length)
     DIM = resolutions[resolution][0]
     PIX = resolutions[resolution][1]
     makeGrid();
-    this.innerHTML = "<strong>Resolution: </strong>" + sizes[resolution]
-});
+    RESOLUTION.innerHTML = "<strong>Resolution: </strong>" + sizes[resolution]
+}
 
-qs("#speed").addEventListener("click", () => {
+SPEED.onclick =  () => {
     speed = mod(speed + 1, speeds.length);
     delay = speeds[speed];
     if (timer != null) { stop(); start(); }
-    this.innerHTML = "<strong>Speed: </strong>" + sizes[speed]
-});
-
-qs("#step").addEventListener("click", () => {
-    if (timer === null) step()
-});
-
-qs("#start").addEventListener("click", start);
-
-function start() {
-    if (timer === null) { timer = setInterval( () => { step() }, delay) }
+    SPEED.innerHTML = "<strong>Speed: </strong>" + sizes[speed]
 }
 
-qs("#stop").addEventListener("click", stop);
+STEP.onclick = () => { if (timer == null) step() }
+
+START.onclick = start
+
+function start() {
+    if (timer == null) { timer = setInterval( () => { step() }, delay) }
+}
+
+STOP.onclick = stop
 function stop() {
     clearInterval(timer);
     timer = null;
 }
 
+// Helpers
 function mod(n, m) { return ((n % m) + m) % m }
+function get(id) { return document.getElementById(id) }
+
 
 //let offRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]//boxy
 //let onRule = [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
