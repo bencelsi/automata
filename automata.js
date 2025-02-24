@@ -182,7 +182,7 @@ function makeNeighborButtons() {
             }
             row.appendChild(btn);
         }
-        NBR_BTNS.appendChild(row)
+        get("nbrBtns").appendChild(row)
     }
 }
 
