@@ -15,7 +15,7 @@ const CTX = CANVAS.getContext("2d");
 
 let brushMode = 0;
 let brushSize = 2;
-let speed = 3
+let speed = 3;
 let resolution = 3;
 let canvas = 0;
 let color = 0;
@@ -40,8 +40,6 @@ let neighbors = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [
 
 let rules = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-
 
 CANVAS.setAttribute("width", DIM * PIX + "px");
 CANVAS.setAttribute("height", DIM * PIX + "px");
@@ -167,9 +165,7 @@ function makeNeighborButtons() {
                 btn.addEventListener("click", function () {
                     let nbrIndex = -1
                     for (let i = 0; i < neighbors.length; i++) {
-                        if (neighbors[i][0] === x && neighbors[i][1] === y) {
-                            nbrIndex = i; break;
-                        }
+                        if (neighbors[i][0] === x && neighbors[i][1] === y) { nbrIndex = i; break; }
                     }
                     if (nbrIndex === -1) {
                         if (neighbors.length === 16) neighbors.splice(0, 1);
@@ -227,17 +223,17 @@ qs("#boundless").addEventListener("click", function () {
     this.innerHTML = "<strong>Boundless: </strong> " + ((boundless) ? "ON" : "OFF")
 });
 
-qs("#brushMode").addEventListener("click", function () {
+qs("#brushMode").addEventListener("click", () => {
     brushMode = mod(brushMode + 1, brushModes.length)
     this.innerHTML = "<strong>Brush Mode: </strong> " + brushModes[brushMode]
 });
 
-qs("#brushSize").addEventListener("click", function () {
+qs("#brushSize").addEventListener("click", () => {
     brushSize = mod(brushSize + 1, brushSizes.length)
     this.innerHTML = "<strong>Brush Size: </strong>" + sizes[brushSize]
 });
 
-qs("#color").addEventListener("click", function () {
+qs("#color").addEventListener("click", () => {
     color = mod(color + 1, colors.length)
     //onColor = colors[color].toLowerCase()
     render();
@@ -246,7 +242,7 @@ qs("#color").addEventListener("click", function () {
     this.innerHTML = "<strong>Color: </strong>" + colors[color]
 });
 
-qs("#resolution").addEventListener("click", function () {
+qs("#resolution").addEventListener("click", () => {
     resolution = mod(resolution + 1, resolutions.length)
     DIM = resolutions[resolution][0]
     PIX = resolutions[resolution][1]
@@ -254,22 +250,21 @@ qs("#resolution").addEventListener("click", function () {
     this.innerHTML = "<strong>Resolution: </strong>" + sizes[resolution]
 });
 
-qs("#speed").addEventListener("click", function () {
+qs("#speed").addEventListener("click", () => {
     speed = mod(speed + 1, speeds.length);
     delay = speeds[speed];
     if (timer != null) { stop(); start(); }
     this.innerHTML = "<strong>Speed: </strong>" + sizes[speed]
 });
 
-qs("#step").addEventListener("click", function () {
+qs("#step").addEventListener("click", () => {
     if (timer === null) step()
 });
 
 qs("#start").addEventListener("click", start);
+
 function start() {
-    if (timer === null) {
-        timer = setInterval(function () { step() }, delay)
-    }
+    if (timer === null) { timer = setInterval( () => { step() }, delay) }
 }
 
 qs("#stop").addEventListener("click", stop);
