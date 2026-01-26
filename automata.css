@@ -13,7 +13,7 @@ body {
 }
 
 #menu {
-	background-color: gray;
+	background-color: lightblue;
 	box-sizing: border-box;
 	align-content: center;
 	text-align: center;
@@ -28,7 +28,7 @@ button {
 	background-color: white;
 	cursor: pointer;
 	margin-bottom: 10px;
-	font-size: 13pt;
+	font-size: 11pt;
 }
 
 a {

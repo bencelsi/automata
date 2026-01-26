@@ -10,7 +10,7 @@ parallelize
 */
 
 //VARS/CONSTANTS
-const DIM = 150; const PIX = 4; const NBR_DIM = 5; const CANVAS = get("canvas")
+let DIM = 150; let PIX = 4; const NBR_DIM = 5; const CANVAS = get("canvas")
 const CTX = CANVAS.getContext("2d");
 
 const NBR_BTNS =    document.getElementsByClassName("nbrBtn");
@@ -95,7 +95,7 @@ function render() {
         for (var x = 0; x < DIM; x++) {
             let cellState = getCell(x, y)
             if (cellState == 0) continue
-            CTX.fillStyle = stateColors[cellState]
+            CTX.fillStyle = colors[color]
             CTX.fillRect(x * PIX, y * PIX, PIX, PIX);
         }
     }
@@ -132,7 +132,7 @@ function makeRuleButtons() {
             button.onclick = () => {
                 rule[j]++
                 if (rule[j] == 2) rule[j] = 0
-                this.style.backgroundColor = stateColors[rule[j]];
+                button.style.backgroundColor = stateColors[rule[j]];
             }
             button.id = ("ruleButton" + i + "-" + j);
             get("rule" + i).appendChild(button)
@@ -151,13 +151,13 @@ function renderRuleButtons() {
             } else {
                 button.disabled = false;
                 button.style.display = "inline";
-                button.style.backgroundColor = stateColors[rule[j]]    
+                button.style.backgroundColor = rule[j] == 1 ? colors[color] : 'white' //stateColors[rule[j]]    
             }
         }
     }
 }
 
-function renderRules() { for (let i = 0; i < rules.length; i++) renderRuleButtons(rule, ) }
+function renderRules() { for (let i = 0; i < rules.length; i++) renderRuleButtons() }
 
 function makeNeighborButtons() {
     for (let y = -NBR_DIM; y <= NBR_DIM; y++) {
@@ -174,9 +174,9 @@ function makeNeighborButtons() {
                         if (neighbors[i][0] === x && neighbors[i][1] === y) { nbrIndex = i; break; }
                     }
                     if (nbrIndex === -1) {
-                        if (neighbors.length === 16) neighbors.splice(0, 1);
+                        if (neighbors.length === 15) neighbors.splice(0, 1);
                         neighbors.push([x, y]);
-                    } else {  neighbors.splice(nbrIndex, 1) }
+                    } else { neighbors.splice(nbrIndex, 1) }
                     renderNeighborButtons(); renderRules();
                 }
             }
@@ -189,8 +189,10 @@ function makeNeighborButtons() {
 let q = [1, 2, 3, 4, 5, 6, 7]
 function renderNeighborButtons() {
     for (let i = 0; i < NBR_BTNS.length; i++) NBR_BTNS[i].style.backgroundColor = "white";
-    for (let i = 0; i < neighbors.length; i++) get("nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
-    get("nbrx0y0").style.backgroundColor = stateColors[1];
+    for (let i = 0; i < neighbors.length; i++) {
+        get("nbrx" + neighbors[i][0] + "y" + neighbors[i][1]).style.backgroundColor = "gray";
+    }
+    get("nbrx0y0").style.backgroundColor = colors[color]
 }
 
 makeNeighborButtons();
@@ -247,6 +249,7 @@ BRUSH_SIZE.onclick = () => {
 
 COLOR.onclick =  () => {
     color = mod(color + 1, colors.length)
+    console.log(color)
     //onColor = colors[color].toLowerCase()
     render();
     renderNeighborButtons();

@@ -44,6 +44,8 @@
 										<button id="speed">
 											<strong>Speed: </strong>4
 										</button>
+										<button id="resolution">
+										<strong>Resolution: </strong>4</button>
 										Set Canvas:
 										<strong><select id = "setCanvas"></strong>
 											<option value="0">RANDOM</option>
@@ -52,12 +54,10 @@
 											<option value="3">CLEAR</option>
 											<option value="4">FILL</option>
 										</select>
-										<button id="resolution">
-										<strong>Resolution: </strong>4</button>
-										<button id="boundless">
-										<strong>Boundless: </strong>ON</button>
 									</div>
 									<div>
+										<button id="boundless">
+											<strong>Boundless: </strong>ON</button>
 										<button id="brushSize">
 											<strong>Brush Size: </strong>3</button>
 										<button id="brushMode">
@@ -65,17 +65,16 @@
 										<button id="color">
 											<strong>Color: </strong>BLUE</button>
 									</div>
-								</div>
+								</div><br>
 								<div id="neighbors">
-									Which surrounding cells are considered neighbors? 
-									<br> (⬛ = true, ⬜ = false)
+									Which surrounding cells are considered neighbors?<br>
+									(gray = neighbor, white = not)<br><br>
 									<div id="nbrBtns"></div>
 								</div>
 								<div id="rule">
-									Outcome of a ⬜ cell with given # of neighbors:
-									<div id="rule0"></div>
-									<br>
-									Outcome of a 🟦 cell with given # of neighbors:
+									Outcome of a dead cell with given # of neighbors:
+									<div id="rule0"></div><br>
+									Outcome of a live cell with given # of neighbors:
 									<div id="rule1"></div>
 								</div>
 							</div>
